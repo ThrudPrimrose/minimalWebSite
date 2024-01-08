@@ -13,6 +13,4 @@ package-lock.json
 .classpath
 .project
 .settings/
-*.md
 *.txt
-*.sh
