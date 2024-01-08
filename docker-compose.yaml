@@ -1,0 +1,29 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - NODE_APP_PORT=3000
+      - MONGO_DB_NAME=cardDatabase
+      - MONGO_COLLECTION_NAME=cardCollection
+      - MONGO_HOST_PORT=27017
+      - MONGO_DB_URL=mongodb://db:27017
+    tty: true
+  db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - db-data:/data/db
+    environment:
+      - MONGO_DB_NAME=cardDatabase
+
+volumes:
+  db-data:
+    external: false
