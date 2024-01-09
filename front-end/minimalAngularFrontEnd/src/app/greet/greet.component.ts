@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { BackendService } from '../services/backend.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-greet',
@@ -11,7 +12,7 @@ import { BackendService } from '../services/backend.service';
 export class GreetComponent {
   message: string = "";
 
-  constructor(private backendService: BackendService) {}
+  constructor(private backendService: BackendService, private router: Router) {}
 
   ngOnInit(): void {
     this.fetchGreetingMessage();
@@ -19,6 +20,10 @@ export class GreetComponent {
 
   fetchGreetingMessage(): void {
     let greetMessage$ = this.backendService.greeting();
-    greetMessage$.subscribe(val => { console.log(val); });
+    greetMessage$.subscribe(val => { console.log(val); this.message = val.result; });
+  }
+
+  navigateToCards(): void {
+    this.router.navigate(['/cards']);
   }
 }

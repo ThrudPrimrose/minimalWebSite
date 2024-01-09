@@ -49,11 +49,11 @@ app.use(express.json());
 
 // Endpoint to return "Hello World"
 app.get('/hello', (_req: Request, res: Response) => {
-  res.json({result: 'Hello World!'});
+  res.json({"result": 'Hello World!'});
 });
 
 app.get('/', (_req: Request, res: Response) => {
-  res.json({result: 'Website enterance route for / Functional.'});
+  res.json({"result": 'Website enterance route for / Functional.'});
 });
 
 app.get('/mongodb-data', async (_req: Request, res: Response) => {
@@ -62,7 +62,7 @@ app.get('/mongodb-data', async (_req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     console.error(error);
-    res.status(500).json({error: 'Internal Server Error'});
+    res.status(500).json({"error": 'Internal Server Error'});
   }
 });
 
@@ -71,18 +71,18 @@ app.post('/mongodb-data', async (req: Request, res: Response) => {
     const newData = req.body;
     // Not accepting emtpy data
     if (Object.keys(newData).length == 0){
-      res.status(400).json({error: 'Empty data.'});
+      res.status(400).json({"error": 'Empty data.'});
     }
     const result = (await collection.insertOne(newData)) as InsertOneResult<Document>;
     if (result.insertedId) {
       const insertedDocument = await collection.findOne({ _id: result.insertedId });
       res.json(insertedDocument);
     } else {
-      res.status(500).json({error: 'Failed to insert document'});
+      res.status(500).json({"error": 'Failed to insert document'});
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({error: `Internal Server Error: ${error}`});
+    res.status(500).json({"error": `Internal Server "error": ${error}`});
   }
 });
 
