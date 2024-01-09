@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Collection, Db, MongoClient, InsertOneResult } from 'mongodb';
+import cors from 'cors';
 
 // JS equivalent would be:
 //const express = require('express');
@@ -13,6 +14,15 @@ const dbPort: string = process.env.MONGO_HOST_PORT ?? '27017'
 const dbUrl: string = process.env.MONGO_DB_URL ?? `mongodb://0.0.0.0:${dbPort}`;
 const dbName: string = process.env.MONGO_DB_NAME ?? 'cardDatabase';
 const collectionName: string = 'cardCollection';
+
+const allowedOrigins = [process.env.WEB_APP_URL ?? `http://localhost:4200`];
+
+// TODO: Add authentication
+const corsOptions: cors.CorsOptions = {
+  origin: allowedOrigins,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 var client: MongoClient;
 var db: Db;
@@ -39,7 +49,11 @@ app.use(express.json());
 
 // Endpoint to return "Hello World"
 app.get('/hello', (_req: Request, res: Response) => {
-  res.send('Hello World');
+  res.json({result: 'Hello World!'});
+});
+
+app.get('/', (_req: Request, res: Response) => {
+  res.json({result: 'Website enterance route for / Functional.'});
 });
 
 app.get('/mongodb-data', async (_req: Request, res: Response) => {
@@ -48,7 +62,7 @@ app.get('/mongodb-data', async (_req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
@@ -57,18 +71,18 @@ app.post('/mongodb-data', async (req: Request, res: Response) => {
     const newData = req.body;
     // Not accepting emtpy data
     if (Object.keys(newData).length == 0){
-      res.status(400).send('Empty data.');
+      res.status(400).json({error: 'Empty data.'});
     }
     const result = (await collection.insertOne(newData)) as InsertOneResult<Document>;
     if (result.insertedId) {
       const insertedDocument = await collection.findOne({ _id: result.insertedId });
       res.json(insertedDocument);
     } else {
-      res.status(500).send('Failed to insert document');
+      res.status(500).json({error: 'Failed to insert document'});
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send(`Internal Server Error: ${error}`);
+    res.status(500).json({error: `Internal Server Error: ${error}`});
   }
 });
 

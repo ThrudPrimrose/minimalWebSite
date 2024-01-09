@@ -14,6 +14,7 @@ services:
       - MONGO_COLLECTION_NAME=cardCollection
       - MONGO_HOST_PORT=27017
       - MONGO_DB_URL=mongodb://db:27017
+      - WEB_APP_URL=http://localhost:4200
     tty: true
   db:
     image: mongo:latest
